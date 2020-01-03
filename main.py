@@ -1,0 +1,119 @@
+#!/home/b0nesh/git/lilmusic/venv/bin/python3.7
+# We download the song
+import sys, youtube_dl
+from shutil import copy
+from gmusicapi import Musicmanager
+from mp3_tagger import MP3File
+
+folders = {1:
+{'suicidesheep': ['/media/b0nesh/Ayymacenamiento/musica/suicidesheep', '/media/b0nesh/Ayy lmao/Música/Buena/suicidesheep']},
+}
+menu = {
+	1: "suicidesheep",
+}
+lil = """
+ ,dPYb,       ,dPYb,                                                         
+ IP'`Yb       IP'`Yb                                                         
+ I8  8I  gg   I8  8I                                           gg            
+ I8  8'  ""   I8  8'                                           ""            
+ I8 dP   gg   I8 dP   ,ggg,,ggg,,ggg,   gg      gg    ,g,      gg     ,gggg, 
+ I8dP    88   I8dP   ,8" "8P" "8P" "8,  I8      8I   ,8'8,     88    dP"  "Yb
+ I8P     88   I8P    I8   8I   8I   8I  I8,    ,8I  ,8'  Yb    88   i8'      
+,d8b,_ _,88,_,d8b,_ ,dP   8I   8I   Yb,,d8b,  ,d8b,,8'_   8) _,88,_,d8,_    _
+8P'"Y888P""Y88P'"Y888P'   8I   8I   `Y88P'"Y88P"`Y8P' "YY8P8P8P""Y8P""Y8888PP	v1.0
+"""
+
+class MyLogger(object):
+    def debug(self, msg):
+        pass
+
+    def warning(self, msg):
+        pass
+
+    def error(self, msg):
+        pass
+        #print(msg)
+   
+def my_hook(d):
+    if d['status'] == 'finished':
+        print('\nDone downloading, now converting...\n')
+
+def download(mode, url, num):
+	print(f"Downloading for {mode}")
+
+	#Options
+	ydl_opts = {
+	    'format': 'bestaudio/best',
+	    'postprocessors': [{
+	        'key': 'FFmpegExtractAudio',
+	        'preferredcodec': 'mp3',
+	        'preferredquality': '320',
+	    }],
+	    'logger': MyLogger(),
+	    'progress_hooks': [my_hook],
+	    'outtmpl': folders[num][mode][0] + '/%(title)s.%(ext)s'
+	}
+
+	#Download the video and extract all the metadata
+	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+		info_dict = ydl.extract_info(url, download=True)
+		video_title = info_dict.get('title', None)
+		video_filename = ''.join(ydl.prepare_filename(info_dict).split('.')[:-1]) + '.mp3'
+	print(ydl.prepare_filename(info_dict))
+
+	#Edit mp3 tag.
+	try:
+		print(f"Editing artist tag to {mode.capitalize()}...")
+		mp3 = MP3File(video_filename)
+		mp3.artist = mode.title()
+		mp3.save()
+		print("Done!\n")
+	except:
+		print("Error at editing mp3 tag.\n")
+
+	#Backup
+	try:
+		print(f"Making a backup of {video_title}...")
+		copy(video_filename, folders[num][mode][1])
+		print("Done!\n")
+	except:
+		print("Error at doing backup.\n")
+
+	#Upload to google
+	try:
+		print(f"Uploading {video_title} to Google Music\n")
+		mm = Musicmanager()
+		mm.login()
+		mm.upload(video_filename)
+		print("Done!\n")
+	except:
+		print("Error at uploading the song to google.\n")
+
+def printing():
+	print(f"\nChoose the number (enter 0 for exiting)\n{'='*18}")
+	for x in menu:
+		print(f'{x} for {menu[x]}')
+	return int(input("\nEnter number: "))
+
+
+if __name__ == '__main__':
+	flag = True 
+	print(lil)
+	while flag:
+		num = printing()
+		if num == 0:
+			print("\nBye.")
+			flag = False
+		elif num in menu:
+			flag2 = True
+			url = input("Enter the url to download: ")
+			while flag2:
+				try:
+					download(list(folders[num].keys())[0], url, num)
+				except:
+					print("Bad url!\n")
+				url = input("Enter next url to download (enter b to go back)\n")
+				if url == 'b':
+					flag2 = False
+		else:
+			pass
