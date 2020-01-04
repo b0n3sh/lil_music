@@ -6,10 +6,10 @@ from gmusicapi import Musicmanager
 from mp3_tagger import MP3File
 
 folders = {1:
-{'suicidesheep': ['/media/b0nesh/Ayymacenamiento/musica/suicidesheep', '/media/b0nesh/Ayy lmao/Música/Buena/suicidesheep']},
+        {'suicidesheep': ['/media/b0nesh/Ayymacenamiento/musica/suicidesheep', '/media/b0nesh/Ayy lmao/Música/Buena/suicidesheep']}, 2: {'lil peep': ['/media/b0nesh/Ayymacenamiento/musica/lilpeep', '/media/b0nesh/Ayy lmao/Música/Buena/lil_peep']}
 }
 menu = {
-	1: "suicidesheep",
+	1: "suicidesheep", 2:'lil peep',
 }
 lil = """
  ,dPYb,       ,dPYb,                                                         
@@ -58,8 +58,8 @@ def download(mode, url, num):
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 		info_dict = ydl.extract_info(url, download=True)
 		video_title = info_dict.get('title', None)
-		video_filename = ''.join(ydl.prepare_filename(info_dict).split('.')[:-1]) + '.mp3'
-	print(ydl.prepare_filename(info_dict))
+		video_filename = '.'.join(ydl.prepare_filename(info_dict).split('.')[:-1]) + '.mp3'
+	print(video_filename)
 
 	#Edit mp3 tag.
 	try:
@@ -108,10 +108,14 @@ if __name__ == '__main__':
 			flag2 = True
 			url = input("Enter the url to download: ")
 			while flag2:
+				while '&list' in url:
+					url = input("That's a list!\n")
 				try:
 					download(list(folders[num].keys())[0], url, num)
-				except:
+				except Exception as e:
 					print("Bad url!\n")
+					print(e) #Debug
+
 				url = input("Enter next url to download (enter b to go back)\n")
 				if url == 'b':
 					flag2 = False

@@ -13,12 +13,12 @@
 
 Script I made for myself but made it available in case it helps somebody.
 
-## What it does?
+## What does it do?
 I had the struggle of everytime I liked a youtube song, having to:
 * Download it using `youtube-dl -x --audio-format mp3`
-* Moving it to the folder I wanted in addition to making a backup in my other HDD.
-* Editing tags (especially the `artist` one, as that's the way I shuffle my music in Google Music.
-* Uploading it to Google Music having to open the browser and bla bla.
+* Move it to the folder I wanted in addition to making a backup in my other HDD.
+* Edit tags (especially the `artist` one, as that's the way I shuffle my music in Google Music.
+* Upload it to Google Music having to open the browser and bla bla.
 
 So I automated the whole process.
 
@@ -28,7 +28,7 @@ So I automated the whole process.
 	* It comes with a `requeriments.txt` 
 * It uses Google's Oauth token system for authentification.
 ## Usage.
-First of all you have to create a Google's Oauth token so you can loging without having to store plain text in your computer.
+First of all you have to create a Google's Oauth token so you can log in without having to store plain text in your computer.
 
 For that, just open a python terminal:
 ```
@@ -36,10 +36,10 @@ from gmusicapi import Musicmanager
 mm = Musicmanager()
 mm.perform_oauth()
 ```
-Now we have our oauth and can loging using `mm.login()`
+Now we have our oauth and can log in using `mm.login()`
 
-Next, customize your folders variable to choose were to store the main mp3 and the backup.
+Next, customize your folders variable to choose where to store the main mp3 and the backup.
 
-After, the menu variable, keep using numbers and the name of the artist you wanna upload to google music.
+Finally, the menu variable, keep using numbers and the name of the artist you wanna upload to google music.
 
 
