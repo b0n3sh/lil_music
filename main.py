@@ -8,10 +8,10 @@ import sys
 
 print(sys.version)
 folders = {1:
-        {'suicidesheep': ['/media/b0nesh/Ayymacenamiento/musica/suicidesheep', '/media/b0nesh/Ayy lmao/Música/Buena/suicidesheep']}, 2: {'lil peep': ['/media/b0nesh/Ayymacenamiento/musica/lilpeep', '/media/b0nesh/Ayy lmao/Música/Buena/lil_peep']}
+        {'suicidesheep': ['/media/b0nesh/Ayymacenamiento/musica/suicidesheep', '/media/b0nesh/Ayy lmao/Música/Buena/suicidesheep']}, 2: {'lil peep': ['/media/b0nesh/Ayymacenamiento/musica/lilpeep', '/media/b0nesh/Ayy lmao/Música/Buena/lil_peep']}, 3: {'bangers': ['/media/b0nesh/Ayymacenamiento/musica/bangers']},
 }
 menu = {
-        1: "suicidesheep", 2:'lil peep',
+        1: "suicidesheep", 2:'lil peep', 3:'bangers',
 }
 lil = """
  ,dPYb,       ,dPYb,                                                         
@@ -74,24 +74,25 @@ def download(mode, url, num):
                 print("Error at editing mp3 tag.\n")
 
         #Backup
-        try:
-                print(f"Making a backup of {video_title}...")
-                copy(video_filename, folders[num][mode][1])
-                print("Done!\n")
-        except:
-                print("Error at doing backup.\n")
+        if num != 3:
+            try:
+                    print(f"Making a backup of {video_title}...")
+                    copy(video_filename, folders[num][mode][1])
+                    print("Done!\n")
+            except:
+                    print("Error at doing backup.\n")
 
         #Upload to google
-        try:
-                print(f"Uploading {video_title} to Google Music\n")
-                print(f'With url {url}')
-                mm = Musicmanager()
-                mm.login(uploader_id='D0:50:99:83:B0:0C')
-                print('1')
-                mm.upload(video_filename)
-                print("Done!\n")
-        except Exception as e:
-            print("Error at uploading the song to google:\n"+e)
+        if num != 3: 
+            try:
+                    print(f"Uploading {video_title} to Google Music\n")
+                    print(f'With url {url}')
+                    mm = Musicmanager()
+                    mm.login(uploader_id='D0:50:99:83:B0:0C')
+                    mm.upload(video_filename)
+                    print("Done!\n")
+            except Exception as e:
+                print("Error at uploading the song to google:\n"+e)
 
 
 def printing():
@@ -119,7 +120,7 @@ if __name__ == '__main__':
                                         download(list(folders[num].keys())[0], url, num)
                                 except Exception as e:
                                         print("Bad url!\n")
-                                        print(e) #Debug
+                                        #print(e) #Debug
 
                                 url = input("Enter next url to download (enter b to go back)\n")
                                 if url == 'b':
