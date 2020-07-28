@@ -28,7 +28,7 @@ So I automated the whole process.
 	* It comes with a `requeriments.txt` 
 * It uses Google's Oauth token system for authentification.
 ## Usage.
-First of all you have to create a Google's Oauth token so you can log in without having to store plain text in your computer.
+First of all, you have to create a Google's Oauth token so you can log in without having to store plain text in your computer.
 
 For that, just open a python terminal:
 ```
@@ -41,5 +41,12 @@ Now we have our oauth and can log in using `mm.login()`
 Next, customize your folders variable to choose where to store the main mp3 and the backup.
 
 Finally, the menu variable, keep using numbers and the name of the artist you wanna upload to google music.
+
+## Update
+All of a sudden Google changed their way of verifying uploads, we have to add our MAC address in the`Musicmanager().login()` function, this way.
+```
+Musicmanager().login(uploader_id='00:00:00:00:00:00') 
+```
+
 
 
