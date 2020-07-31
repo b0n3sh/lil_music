@@ -1,10 +1,10 @@
 #!venv/bin/python3
 # We download the song
-import sys, youtube_dl
+import sys, youtube_dl, os, requests
 from shutil import copy
 from gmusicapi import Musicmanager
 from mp3_tagger import MP3File
-import sys
+from mutagen.id3 import ID3, APIC
 
 print(sys.version)
 folders = {1:
@@ -40,6 +40,23 @@ def my_hook(d):
     if d['status'] == 'finished':
         print('\nDone downloading, now converting...\n')
 
+def insert_album_art(music_file, id_video):
+    audio = ID3(music_file)
+
+    with open('0.jpg', 'wb') as img:
+        img.write(requests.get(f'https://img.youtube.com/vi/{id_video}/hqdefault.jpg').content)
+    with open('0.jpg', 'rb') as albumart:
+        audio['APIC'] = APIC(
+                            encoding=3,
+                            mime='image/jpeg',
+                            type=3, desc=u'Cover',
+                            data=albumart.read()
+                            )
+    audio.save()
+    os.remove('0.jpg')
+    
+
+
 def download(mode, url, num):
         print(f"Downloading for {mode}")
 
@@ -69,9 +86,11 @@ def download(mode, url, num):
                 mp3 = MP3File(video_filename)
                 mp3.artist = mode.title()
                 mp3.save()
+                insert_album_art(video_filename, info_dict['id'])
                 print("Done!\n")
-        except:
+        except Exception as e:
                 print("Error at editing mp3 tag.\n")
+                print(e)
 
         #Backup
         if num != 3:
@@ -120,7 +139,7 @@ if __name__ == '__main__':
                                         download(list(folders[num].keys())[0], url, num)
                                 except Exception as e:
                                         print("Bad url!\n")
-                                        #print(e) #Debug
+                                        print(e) #Debug
 
                                 url = input("Enter next url to download (enter b to go back)\n")
                                 if url == 'b':
